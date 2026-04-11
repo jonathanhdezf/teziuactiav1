@@ -22,7 +22,7 @@ export default function LawTicker() {
 
   return (
     <div
-      className="relative flex overflow-x-hidden group whitespace-nowrap font-display py-1"
+      className="relative flex overflow-hidden group whitespace-nowrap font-display py-1"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onTouchStart={() => setIsPaused(true)}

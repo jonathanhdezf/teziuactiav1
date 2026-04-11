@@ -59,7 +59,7 @@ const stats = [
 export default function HomePage() {
   return (
     <>
-      <main id="main-content" className="pb-24 md:pb-0">
+      <main id="main-content" className="pb-24 md:pb-0 overflow-x-clip relative">
 
         {/* ═══════════════════════════════════════════════════
             HERO SECTION
@@ -215,7 +215,7 @@ export default function HomePage() {
         <section
           id="problema"
           aria-labelledby="problema-heading"
-          className="px-5 md:px-10 lg:px-20 py-24 max-w-7xl mx-auto relative"
+          className="px-5 md:px-10 lg:px-20 py-24 max-w-7xl mx-auto relative overflow-hidden"
         >
           {/* Subtle bg glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-orange-500/5 blur-[120px] rounded-full pointer-events-none" />
