@@ -19,6 +19,9 @@ export const metadata: Metadata = {
   title: "Reforma Teziupark | Firmas Ciudadanas · Teziutlán, Puebla",
   description:
     "Exigimos la reforma inmediata al Reglamento de Estacionómetros Teziupark para incluir políticas claras, justas e incluyentes para motociclistas y trabajadores de plataformas de entrega en Teziutlán.",
+  icons: {
+    icon: "/favicon.png",
+  },
   keywords: [
     "Teziupark",
     "motociclistas",
