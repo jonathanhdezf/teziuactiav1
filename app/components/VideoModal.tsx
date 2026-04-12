@@ -28,12 +28,13 @@ export default function VideoModal() {
     <>
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-neutral-400 hover:text-white hover:bg-orange-500/20 hover:border-orange-500/30 transition-all duration-300 text-xs font-bold tracking-wider uppercase group"
+        className="flex items-center gap-2 px-5 py-2.5 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-200 hover:text-white hover:bg-orange-500/20 hover:border-orange-500/50 hover:shadow-[0_0_20px_rgba(249,115,22,0.2)] transition-all duration-300 text-xs font-bold tracking-wider uppercase group relative overflow-hidden"
       >
-        <svg className="w-4 h-4 text-orange-500 group-hover:scale-110 transition-transform" fill="currentColor" viewBox="0 0 24 24">
+        <div className="absolute inset-0 bg-gradient-to-r from-orange-500/0 via-orange-500/5 to-orange-500/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000" />
+        <svg className="w-4 h-4 text-orange-400 group-hover:scale-110 transition-transform relative z-10" fill="currentColor" viewBox="0 0 24 24">
           <path d="M8 5v14l11-7z" />
         </svg>
-        Ver Video
+        <span className="relative z-10">Ver Video</span>
       </button>
 
       <AnimatePresence>
