@@ -136,7 +136,7 @@ export default function SignatureForm() {
   }
 
   return (
-    <div className="form-glass p-10 md:p-16">
+    <div className="form-glass !p-10 md:!p-16">
       <div className="mb-8 text-center">
         <div className="law-badge mb-4 mx-auto w-fit">
           <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
