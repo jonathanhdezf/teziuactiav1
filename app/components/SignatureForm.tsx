@@ -101,7 +101,8 @@ export default function SignatureForm() {
         initial={{ opacity: 0, scale: 0.95 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.5, ease: 'easeOut' }}
-        className="form-glass p-10 md:p-16 text-center space-y-10 relative overflow-hidden"
+        className="form-glass text-center space-y-10 relative overflow-hidden"
+        style={{ padding: 'clamp(2.5rem, 6vw, 5rem)' }}
       >
         <div className="absolute -top-24 -left-24 w-64 h-64 bg-orange-500/10 blur-[80px] rounded-full pointer-events-none" />
         <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-amber-500/10 blur-[80px] rounded-full pointer-events-none" />
@@ -159,7 +160,7 @@ export default function SignatureForm() {
   }
 
   return (
-    <div className="form-glass !p-10 md:!p-16">
+    <div className="form-glass text-center" style={{ padding: 'clamp(2.5rem, 6vw, 5rem)' }}>
       <div className="mb-8 text-center">
         <div className="law-badge mb-4 mx-auto w-fit">
           <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
