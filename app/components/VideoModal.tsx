@@ -1,10 +1,13 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 export default function VideoModal() {
   const [isOpen, setIsOpen] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(modalRef, isOpen);
 
   // Close on ESC
   useEffect(() => {
@@ -56,6 +59,9 @@ export default function VideoModal() {
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               className="relative w-full max-w-5xl aspect-video bg-neutral-900 rounded-2xl border border-white/10 overflow-hidden shadow-2xl flex flex-col"
+              ref={modalRef}
+              role="dialog"
+              aria-modal="true"
             >
               <div className="flex items-center justify-between p-4 border-b border-white/5 bg-black/20 shrink-0">
                 <div className="flex items-center gap-3">

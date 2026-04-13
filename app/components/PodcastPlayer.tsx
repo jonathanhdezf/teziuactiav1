@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion } from 'framer-motion';
+import Image from 'next/image';
 
 export default function PodcastPlayer() {
   const [isPlaying, setIsPlaying] = useState(false);
@@ -51,9 +52,11 @@ export default function PodcastPlayer() {
         {/* Cover Art */}
         <div className="relative w-48 h-48 md:w-56 md:h-56 shrink-0 group">
           <div className="absolute inset-0 bg-orange-500/20 blur-2xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
-          <img
+          <Image
             src="/assets/podcast_cover.png"
             alt="Podcast Cover"
+            width={224}
+            height={224}
             className={`w-full h-full object-cover rounded-2xl shadow-2xl border border-white/10 transition-transform duration-700 ${isPlaying ? 'scale-105 rotate-1' : 'scale-100'}`}
           />
           {/* Play/Pause Overlay for Mobile */}

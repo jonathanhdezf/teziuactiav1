@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useTransition } from 'react';
+import { useState, useTransition, useEffect } from 'react';
 import { motion } from 'framer-motion';
 
 interface FormState {
@@ -12,13 +12,33 @@ interface FormState {
 export default function SignatureForm() {
   const [formState, setFormState] = useState<FormState>({ status: 'idle' });
   const [isPending, startTransition] = useTransition();
+  const [totalCount, setTotalCount] = useState<number | null>(null);
   const [fields, setFields] = useState({
     nombre: '',
     domicilio: '',
     telefono: '',
     acepta: false,
+    honeypot: '', // Anti-bot honeypot field (hidden from users)
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+
+  // Fetch real signature count on mount
+  useEffect(() => {
+    let cancelled = false;
+    async function fetchCount() {
+      try {
+        const res = await fetch('/api/signatures/count');
+        const data = await res.json();
+        if (!cancelled && data.total) {
+          setTotalCount(data.total);
+        }
+      } catch {
+        // Silently fail, count stays null
+      }
+    }
+    fetchCount();
+    return () => { cancelled = true; };
+  }, []);
 
   const validate = () => {
     const errs: Record<string, string> = {};
@@ -28,6 +48,8 @@ export default function SignatureForm() {
       errs.domicilio = 'Ingresa tu domicilio (colonia, calle o referencia).';
     if (!fields.acepta)
       errs.acepta = 'Debes aceptar los términos para firmar.';
+    if (fields.telefono && fields.telefono.trim().length > 0 && fields.telefono.trim().length < 10)
+      errs.telefono = 'Número de teléfono inválido (mínimo 10 dígitos).';
     return errs;
   };
 
@@ -46,32 +68,29 @@ export default function SignatureForm() {
     startTransition(async () => {
       setFormState({ status: 'submitting' });
       try {
-        /*
-         * TODO: Conectar a Supabase / PostgreSQL / API Route
-         * Ejemplo con Supabase:
-         *
-         * const { error } = await supabase
-         *   .from('firmas')
-         *   .insert([{ nombre: fields.nombre, domicilio: fields.domicilio, telefono: fields.telefono }]);
-         * if (error) throw error;
-         *
-         * O con un API Route de Next.js:
-         * const res = await fetch('/api/firmar', {
-         *   method: 'POST',
-         *   headers: { 'Content-Type': 'application/json' },
-         *   body: JSON.stringify(fields),
-         * });
-         * if (!res.ok) throw new Error('Error del servidor');
-         */
+        const res = await fetch('/api/signatures', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            nombre: fields.nombre,
+            domicilio: fields.domicilio,
+            telefono: fields.telefono,
+            honeypot: fields.honeypot,
+          }),
+        });
 
-        // ── Simulación del envío asíncrono ───────────────────
-        await new Promise(r => setTimeout(r, 1800));
-        // ─────────────────────────────────────────────────────
+        const data = await res.json();
 
-        setFormState({ status: 'success', signatureCount: Math.floor(Math.random() * 80) + 240 });
-        setFields({ nombre: '', domicilio: '', telefono: '', acepta: false });
-      } catch {
-        setFormState({ status: 'error', message: 'Ocurrió un error al enviar. Inténtalo de nuevo.' });
+        if (!res.ok) {
+          throw new Error(data.message || data.error || 'Error al registrar la firma');
+        }
+
+        setTotalCount(data.signatureCount);
+        setFormState({ status: 'success', signatureCount: data.signatureCount });
+        setFields({ nombre: '', domicilio: '', telefono: '', acepta: false, honeypot: '' });
+      } catch (err) {
+        const message = err instanceof Error ? err.message : 'Ocurrió un error al enviar. Inténtalo de nuevo.';
+        setFormState({ status: 'error', message });
       }
     });
   };
@@ -86,7 +105,7 @@ export default function SignatureForm() {
       >
         <div className="absolute -top-24 -left-24 w-64 h-64 bg-orange-500/10 blur-[80px] rounded-full pointer-events-none" />
         <div className="absolute -bottom-24 -right-24 w-64 h-64 bg-amber-500/10 blur-[80px] rounded-full pointer-events-none" />
-        
+
         <div className="flex justify-center relative z-10">
           <div className="relative w-24 h-24 pulse-ring">
             <div className="icon-badge w-24 h-24 bg-orange-500/10 border-orange-500/30">
@@ -101,7 +120,11 @@ export default function SignatureForm() {
             ¡Tu firma cuenta!
           </h3>
           <p className="text-neutral-300 mt-4 text-lg leading-relaxed">
-            Te has unido a <span className="text-amber-400 font-black text-xl drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]">{formState.signatureCount} ciudadanos</span> que exigen movilidad justa en Teziutlán.
+            Te has unido a{' '}
+            <span className="text-amber-400 font-black text-xl drop-shadow-[0_0_8px_rgba(251,191,36,0.5)]">
+              {formState.signatureCount ?? totalCount ?? 'muchos'} ciudadanos
+            </span>{' '}
+            que exigen movilidad justa en Teziutlán.
           </p>
         </div>
         <p className="text-sm text-neutral-500 relative z-10 max-w-sm mx-auto">
@@ -145,8 +168,13 @@ export default function SignatureForm() {
           Petición oficial ciudadana
         </div>
         <h2 className="text-3xl md:text-4xl font-black leading-tight font-display">
-          Súmate a los ciudadanos que{' '}
-          <span className="text-orange-400">exigen movilidad justa</span>
+          Súmate a los{' '}
+          {totalCount !== null ? (
+            <span className="text-orange-400">{totalCount.toLocaleString()} ciudadanos</span>
+          ) : (
+            <span className="text-orange-400">ciudadanos</span>
+          )}{' '}
+          que exigen movilidad justa
         </h2>
         <p className="mt-3 text-base">
           Tu firma es tu voz. Cada registro se presenta ante el H. Ayuntamiento de Teziutlán como evidencia de la voluntad ciudadana.
@@ -154,6 +182,20 @@ export default function SignatureForm() {
       </div>
 
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
+        {/* HONEYPOT - Hidden from users, catches bots */}
+        <div className="hidden" aria-hidden="true">
+          <label htmlFor="website">No llenes este campo</label>
+          <input
+            id="website"
+            name="honeypot"
+            type="text"
+            tabIndex={-1}
+            autoComplete="off"
+            value={fields.honeypot}
+            onChange={handleChange}
+          />
+        </div>
+
         {/* Nombre */}
         <div className="space-y-2">
           <label htmlFor="nombre" className="flex items-center gap-2 text-sm font-semibold text-neutral-200">
@@ -235,8 +277,16 @@ export default function SignatureForm() {
               value={fields.telefono}
               onChange={handleChange}
               className="form-input"
+              aria-describedby={errors.telefono ? 'telefono-error' : undefined}
+              aria-invalid={errors.telefono ? true : false}
             />
           </div>
+          {errors.telefono && (
+            <p id="telefono-error" className="text-red-400 text-xs mt-1.5 flex items-center gap-1.5 pl-1">
+              <svg className="w-3.5 h-3.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" /></svg>
+              {errors.telefono}
+            </p>
+          )}
         </div>
 
         {/* Términos */}
@@ -294,7 +344,7 @@ export default function SignatureForm() {
           className="btn-primary w-full py-4.5 rounded-2xl text-base tracking-widest flex items-center justify-center gap-3 mt-4 disabled:opacity-70 disabled:cursor-not-allowed group/btn overflow-hidden relative"
         >
           <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover/btn:animate-[shimmer_2s_infinite] pointer-events-none" />
-          
+
           {formState.status === 'submitting' || isPending ? (
             <>
               <svg className="w-5 h-5 animate-spin" viewBox="0 0 24 24" fill="none">

@@ -75,7 +75,7 @@ export default function AccordionDemands() {
               aria-expanded={isOpen ? 'true' : 'false'}
               aria-controls={`accordion-content-${item.id}`}
               onClick={() => setOpenId(isOpen ? null : item.id)}
-              className="w-full flex items-center gap-4 px-5 py-4 text-left group"
+              className="w-full flex items-center gap-4 px-6 py-5 text-left group"
             >
               <div className={`icon-badge w-11 h-11 flex-shrink-0 transition-all duration-300 ${isOpen ? 'scale-110' : 'group-hover:scale-105'}`}>
                 {item.icon}

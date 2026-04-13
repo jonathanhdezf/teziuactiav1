@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
 
 const images = [
   '/assets/manifiesto/manifiesto1.png',
@@ -66,9 +67,8 @@ export default function ManifestoCarousel() {
     >
       <div className="relative aspect-[3/4] md:aspect-[16/9] overflow-hidden rounded-3xl border border-white/10 shadow-2xl bg-neutral-900 group">
         <AnimatePresence initial={false} custom={direction}>
-          <motion.img
+          <motion.div
             key={index}
-            src={images[index]}
             custom={direction}
             variants={variants}
             initial="enter"
@@ -79,9 +79,16 @@ export default function ManifestoCarousel() {
               opacity: { duration: 0.4 },
               scale: { duration: 0.4 }
             }}
-            className="absolute inset-0 w-full h-full object-contain bg-black/40 p-4 md:p-8"
-            alt={`Manifiesto página ${index + 1}`}
-          />
+            className="absolute inset-0 w-full h-full bg-black/40"
+          >
+            <Image
+              src={images[index]}
+              alt={`Manifiesto página ${index + 1}`}
+              fill
+              className="object-contain p-4 md:p-8"
+              sizes="(max-width: 768px) 100vw, 80vw"
+            />
+          </motion.div>
         </AnimatePresence>
 
         {/* Overlays */}

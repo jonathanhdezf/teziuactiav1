@@ -1,10 +1,15 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+
+import Image from 'next/image';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 export default function Footer() {
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+  const privacyModalRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(privacyModalRef, isPrivacyOpen);
 
   // Close on ESC
   useEffect(() => {
@@ -21,7 +26,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="md:col-span-2 space-y-6">
             <div className="flex items-center gap-3">
-              <img src="/favicon.png" alt="Logo" className="w-8 h-8 rounded-lg" />
+              <Image src="/favicon.png" alt="Logo" width={32} height={32} className="rounded-lg" />
               <span className="text-xl font-black font-display tracking-tight text-white uppercase">Teziuactua</span>
             </div>
             <p className="text-neutral-500 text-sm max-w-sm leading-relaxed">
@@ -92,6 +97,10 @@ export default function Footer() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               className="relative w-full max-w-2xl max-h-[80vh] bg-neutral-900 rounded-2xl border border-white/10 overflow-hidden shadow-2xl flex flex-col"
+              ref={privacyModalRef}
+              role="dialog"
+              aria-modal="true"
+              aria-label="Aviso de Privacidad"
             >
               <div className="p-6 border-b border-white/5 flex justify-between items-center bg-black/20">
                 <h3 className="text-sm font-black text-white uppercase tracking-widest font-display">Aviso de Privacidad</h3>

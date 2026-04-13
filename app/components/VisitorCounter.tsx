@@ -8,18 +8,17 @@ export default function VisitorCounter() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Real-time counter using CounterAPI.dev (Free, no account needed)
-    // Namespace: teziuactua, Key: visits
     const fetchCount = async () => {
       try {
-        const response = await fetch('https://api.counterapi.dev/v1/teziuactua/visits/hit');
+        const response = await fetch('https://api.counterapi.dev/v1/teziuactua/visits/hit', {
+          signal: AbortSignal.timeout(3000), // 3 second timeout
+        });
         const data = await response.json();
         if (data && data.count) {
           setCount(data.count);
         }
-      } catch (error) {
-        console.error('Error fetching real-time count:', error);
-        // Fallback to a localized simulated count if API fails
+      } catch {
+        // Silently use localStorage - no console errors for external service
         const saved = localStorage.getItem('local_visits');
         const newCount = saved ? parseInt(saved) + 1 : 1;
         localStorage.setItem('local_visits', newCount.toString());

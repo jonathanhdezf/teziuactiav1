@@ -1,10 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import Image from 'next/image';
+import { useFocusTrap } from '../hooks/useFocusTrap';
 
 export default function InfoModal() {
   const [isOpen, setIsOpen] = useState(false);
+  const modalRef = useRef<HTMLDivElement>(null);
+  useFocusTrap(modalRef, isOpen);
 
   // Close on ESC
   useEffect(() => {
@@ -56,6 +60,9 @@ export default function InfoModal() {
               exit={{ opacity: 0, scale: 0.9, y: 20 }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
               className="relative w-full max-w-5xl max-h-full bg-neutral-900 rounded-2xl border border-white/10 overflow-hidden shadow-2xl flex flex-col"
+              ref={modalRef}
+              role="dialog"
+              aria-modal="true"
             >
               <div className="flex items-center justify-between p-4 border-b border-white/5 bg-black/20">
                 <div className="flex items-center gap-3">
@@ -81,9 +88,11 @@ export default function InfoModal() {
               </div>
 
               <div className="flex-1 overflow-auto p-2 bg-black/40 mini-scrollbar">
-                <img
+                <Image
                   src="/assets/movilidadjustainfo.png"
                   alt="Infografía Movilidad Justa Teziupark"
+                  width={1200}
+                  height={800}
                   className="w-full h-auto rounded-lg shadow-2xl"
                   loading="lazy"
                 />
