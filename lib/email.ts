@@ -8,7 +8,7 @@ if (!resendApiKey) {
 
 export const resend = resendApiKey ? new Resend(resendApiKey) : null;
 
-export const FROM_EMAIL = 'Teziuactua <notificaciones@teziuactua.com>';
+export const FROM_EMAIL = 'Teziuactua <onboarding@resend.dev>';
 export const TO_EMAIL = 'jonathanhdezf@gmail.com';
 
 interface SignatureNotificationData {
