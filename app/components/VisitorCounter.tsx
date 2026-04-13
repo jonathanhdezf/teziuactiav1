@@ -8,23 +8,30 @@ export default function VisitorCounter() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    // Simulating a visitor count fetch + increment
-    // In a real app, this would come from a database or analytics API
-    const baseCount = 12450;
-    const randomBoost = Math.floor(Math.random() * 50);
-    setCount(baseCount + randomBoost);
+    // Real-time counter using CounterAPI.dev (Free, no account needed)
+    // Namespace: teziuactua, Key: visits
+    const fetchCount = async () => {
+      try {
+        const response = await fetch('https://api.counterapi.dev/v1/teziuactua/visits/hit');
+        const data = await response.json();
+        if (data && data.count) {
+          setCount(data.count);
+        }
+      } catch (error) {
+        console.error('Error fetching real-time count:', error);
+        // Fallback to a localized simulated count if API fails
+        const saved = localStorage.getItem('local_visits');
+        const newCount = saved ? parseInt(saved) + 1 : 1;
+        localStorage.setItem('local_visits', newCount.toString());
+        setCount(newCount);
+      }
+    };
+
+    fetchCount();
     
     const timer = setTimeout(() => setIsVisible(true), 1500);
     
-    // Simulate real-time updates every few seconds
-    const interval = setInterval(() => {
-      setCount(prev => prev + (Math.random() > 0.7 ? 1 : 0));
-    }, 5000);
-
-    return () => {
-      clearTimeout(timer);
-      clearInterval(interval);
-    };
+    return () => clearTimeout(timer);
   }, []);
 
   return (
