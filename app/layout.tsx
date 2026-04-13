@@ -20,8 +20,8 @@ export const metadata: Metadata = {
   description:
     "Exigimos la reforma inmediata al Reglamento de Estacionómetros Teziupark para incluir políticas claras, justas e incluyentes para motociclistas y trabajadores de plataformas de entrega en Teziutlán.",
   icons: {
-    icon: "/favicon.svg",
-    apple: "/favicon.svg",
+    icon: "/teziuactua-favicon.png",
+    apple: "/teziuactua-favicon.png",
   },
   keywords: [
     "Teziupark",
