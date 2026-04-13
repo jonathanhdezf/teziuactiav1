@@ -8,6 +8,7 @@ import VideoModal from './components/VideoModal';
 import ManifestoCarousel from './components/ManifestoCarousel';
 import PodcastPlayer from './components/PodcastPlayer';
 import Footer from './components/Footer';
+import VisitorCounter from './components/VisitorCounter';
 
 // ── Data ───────────────────────────────────────────────────────
 const problemCards = [
@@ -444,6 +445,7 @@ export default function HomePage() {
             <FadeIn direction="right">
               <div className="relative">
                 <div className="absolute -top-20 -left-20 w-64 h-64 bg-orange-600/10 blur-[100px] rounded-full" />
+                <VisitorCounter />
                 <div className="law-badge mb-6 w-fit bg-orange-500/10 text-orange-400 border-orange-500/20">Movimiento Ciudadano</div>
                 <h2 className="text-4xl md:text-5xl font-black font-display leading-tight mb-8">
                   Ciudadanos Libres,<br />
