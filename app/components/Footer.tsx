@@ -26,8 +26,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
           <div className="md:col-span-2 space-y-6">
             <div className="flex items-center gap-3">
-              <Image src="/favicon.png" alt="Logo" width={32} height={32} className="rounded-lg" />
-              <span className="text-xl font-black font-display tracking-tight text-white uppercase">Teziuactua</span>
+              <Image src="/assets/teziuactua-logo-oficial.png" alt="Teziuactua Logo" width={160} height={40} className="h-10 w-auto object-contain" />
             </div>
             <p className="text-neutral-500 text-sm max-w-sm leading-relaxed">
               Plataforma ciudadana independiente dedicada a la mejora de la movilidad y el respeto a los derechos de los habitantes de Teziutlán.
