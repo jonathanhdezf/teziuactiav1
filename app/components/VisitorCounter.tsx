@@ -5,8 +5,8 @@ import { motion, AnimatePresence } from 'framer-motion';
 
 export default function VisitorCounter() {
   const [count, setCount] = useState(0);
-  const [isVisible, setIsVisible] = useState(false);
   const [displayCount, setDisplayCount] = useState(0);
+  const [isVisible, setIsVisible] = useState(false);
 
   // Animate counter increment
   useEffect(() => {
@@ -19,18 +19,22 @@ export default function VisitorCounter() {
   }, [count, displayCount]);
 
   useEffect(() => {
-    const incrementAndFetch = async () => {
+    const fetchVisitCount = async () => {
       try {
-        const saved = localStorage.getItem('teziuactua_visits') || '0';
-        const newCount = parseInt(saved) + 1;
-        localStorage.setItem('teziuactua_visits', newCount.toString());
-        setCount(newCount);
+        const res = await fetch('/api/visits', {
+          signal: AbortSignal.timeout(5000), // 5 second timeout
+        });
+        const data = await res.json();
+        if (data.count) {
+          setCount(data.count);
+        }
       } catch {
-        // Silently fail
+        // Silently fail, show 0
+        console.warn('Failed to fetch visit count');
       }
     };
 
-    incrementAndFetch();
+    fetchVisitCount();
 
     const timer = setTimeout(() => setIsVisible(true), 800);
 
@@ -90,7 +94,7 @@ export default function VisitorCounter() {
                 {/* Text Content */}
                 <div className="flex flex-col flex-1 min-w-0">
                   <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.25em] text-neutral-500 mb-0.5">
-                    Ciudadanos Activos
+                    Visitantes
                   </span>
                   <div className="flex items-baseline gap-2">
                     <motion.span
@@ -126,7 +130,7 @@ export default function VisitorCounter() {
             {/* Tooltip on Hover (desktop only) */}
             <div className="hidden md:block absolute bottom-full left-1/2 -translate-x-1/2 mb-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
               <div className="px-3 py-2 bg-neutral-900/95 backdrop-blur-md border border-white/10 rounded-lg text-[9px] font-bold text-neutral-300 whitespace-nowrap shadow-[0_8px_32px_rgba(0,0,0,0.5)]">
-                <span className="text-orange-400">⚡</span> Visitas en tiempo real
+                <span className="text-orange-400">⚡</span> Visitas globales en tiempo real
               </div>
               <div className="w-2 h-2 bg-neutral-900 border-r border-b border-white/10 transform rotate-45 mx-auto -mt-1" />
             </div>
