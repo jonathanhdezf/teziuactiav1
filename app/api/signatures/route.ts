@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import { supabaseAdmin } from '@/lib/supabase/server';
 import { checkRateLimit } from '@/lib/rate-limiter';
 import { getIPFromRequest, hashIP } from '@/lib/ip-hash';
+import { sendSignatureNotification } from '@/lib/email';
 
 interface SignatureRequest {
   nombre: string;
@@ -130,6 +131,21 @@ export async function POST(request: NextRequest) {
     const { count: totalCount } = await supabaseAdmin
       .from('signatures')
       .select('*', { count: 'exact', head: true });
+
+    // 7. Send email notification (non-blocking, fire-and-forget)
+    if (process.env.RESEND_API_KEY) {
+      sendSignatureNotification({
+        nombre: sanitizedNombre,
+        domicilio: sanitizedDomicilio,
+        telefono: sanitizedTelefono || undefined,
+        totalSignatures: totalCount || 0,
+        timestamp: new Date().toLocaleString('es-MX', {
+          timeZone: 'America/Mexico_City',
+          dateStyle: 'full',
+          timeStyle: 'medium',
+        }),
+      }).catch(err => console.error('Failed to send email notification:', err));
+    }
 
     return NextResponse.json({
       success: true,
