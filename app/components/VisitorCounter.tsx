@@ -8,28 +8,22 @@ export default function VisitorCounter() {
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    const fetchCount = async () => {
+    const incrementAndFetch = async () => {
       try {
-        const response = await fetch('https://api.counterapi.dev/v1/teziuactua/visits/hit', {
-          signal: AbortSignal.timeout(3000), // 3 second timeout
-        });
-        const data = await response.json();
-        if (data && data.count) {
-          setCount(data.count);
-        }
-      } catch {
-        // Silently use localStorage - no console errors for external service
-        const saved = localStorage.getItem('local_visits');
-        const newCount = saved ? parseInt(saved) + 1 : 1;
-        localStorage.setItem('local_visits', newCount.toString());
+        // Increment local count
+        const saved = localStorage.getItem('teziuactua_visits') || '0';
+        const newCount = parseInt(saved) + 1;
+        localStorage.setItem('teziuactua_visits', newCount.toString());
         setCount(newCount);
+      } catch {
+        // Silently fail
       }
     };
 
-    fetchCount();
-    
+    incrementAndFetch();
+
     const timer = setTimeout(() => setIsVisible(true), 1500);
-    
+
     return () => clearTimeout(timer);
   }, []);
 
@@ -40,21 +34,21 @@ export default function VisitorCounter() {
           initial={{ opacity: 0, x: -20 }}
           animate={{ opacity: 1, x: 0 }}
           exit={{ opacity: 0, x: -20 }}
-          className="fixed bottom-24 left-6 z-[60] hidden md:block"
+          className="fixed bottom-24 left-6 z-[60]"
         >
           <div className="relative group">
             {/* Soft Glow Background */}
             <div className="absolute inset-0 bg-orange-500/20 blur-xl rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-            
+
             <div className="relative flex items-center gap-3 px-4 py-2.5 bg-black/40 backdrop-blur-md border border-white/10 rounded-2xl shadow-2xl">
               <div className="flex items-center justify-center w-8 h-8 rounded-full bg-orange-500/10 border border-orange-500/20">
                 <div className="w-1.5 h-1.5 rounded-full bg-orange-500 animate-pulse" />
               </div>
-              
+
               <div className="flex flex-col">
                 <span className="text-[10px] font-black uppercase tracking-[0.2em] text-neutral-500">Ciudadanos Activos</span>
                 <div className="flex items-baseline gap-1">
-                  <motion.span 
+                  <motion.span
                     key={count}
                     initial={{ opacity: 0, y: 5 }}
                     animate={{ opacity: 1, y: 0 }}
