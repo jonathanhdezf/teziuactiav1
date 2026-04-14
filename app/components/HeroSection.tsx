@@ -8,7 +8,7 @@ import VideoModal from './VideoModal';
 const stats = [
   { value: '2020', label: 'Año del reglamento', sublabel: 'Sin actualización a la economía digital' },
   { value: '0', label: 'Cajones para motos vecinales', sublabel: 'En todo el centro de Teziutlán' },
-  { value: '+15K', label: 'Repartidores afectados', sublabel: 'En la región de Teziutlán y alrededores' },
+  { value: '+800', label: 'Repartidores afectados', sublabel: 'En la zona metropolitana de Teziutlán' },
   { value: '35%', label: 'Menos espacio', sublabel: 'Ocupan vs. un auto convencional' },
 ];
 
